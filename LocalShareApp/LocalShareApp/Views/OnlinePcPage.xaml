@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="LocalShareApp.Views.OnlinePcPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:LocalShareApp.Views.Controls"
+    xmlns:viewmodels="clr-namespace:LocalShareApp.ViewModels">
+
+    <ContentPage.BindingContext>
+        <viewmodels:OnlinePCPageViewModel />
+    </ContentPage.BindingContext>
+
+
+    <ContentPage.Content>
+
+
+
+
+        <StackLayout BackgroundColor="{StaticResource Primary}">
+
+
+            <StackLayout IsVisible="{Binding IsStackLayoutVisible}">
+                <Label
+                    Margin="30,20,20,20"
+                    FontSize="24"
+                    HorizontalTextAlignment="Center"
+                    Text="Searching for LocalShare PC in your network..."
+                    TextColor="Black" />
+
+                <ActivityIndicator x:Name="LoadingSpinner" IsRunning="true" />
+            </StackLayout>
+
+
+
+            <CollectionView ItemsSource="{Binding Hosts.Connections}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+
+                        <StackLayout>
+                            <controls:MaterialCard>
+                                <Grid Padding="10">
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <Grid Grid.Row="0">
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto" />
+                                            <RowDefinition Height="auto" />
+                                            <RowDefinition Height="auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="auto" />
+                                        </Grid.ColumnDefinitions>
+
+
+
+                                        <Label
+                                            FontSize="22"
+                                            Text="{Binding HostPcName}"
+                                            TextColor="Black" />
+
+                                        <Label
+                                            Grid.Row="1"
+                                            FontSize="16"
+                                            Text="{Binding HostPcIP}"
+                                            TextColor="Black" />
+
+                                        <Button
+                                            Grid.RowSpan="2"
+                                            Grid.Column="2"
+                                            Background="#909090"
+                                            Command="{Binding SendFileCommand, Source={RelativeSource AncestorType={x:Type viewmodels:OnlinePCPageViewModel}}}"
+                                            Text="Send File"
+                                            VerticalOptions="Center" />
+
+                                    </Grid>
+
+                                    <Grid Grid.Row="1" IsVisible="true">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="5" />
+                                            <RowDefinition Height="auto" />
+                                            <RowDefinition Height="auto" />
+                                            <RowDefinition Height="auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            FontSize="18"
+                                            Text="Outgoing Files"
+                                            TextColor="Black" />
+                                        <Label
+                                            Grid.Row="2"
+                                            Grid.Column="0"
+                                            Text="Sending"
+                                            TextColor="Black" />
+                                        <Label
+                                            Grid.Row="3"
+                                            Grid.Column="0"
+                                            Text="Speed"
+                                            TextColor="Black" />
+                                        <Label
+                                            Grid.Row="4"
+                                            Grid.Column="0"
+                                            Text="ETA"
+                                            TextColor="Black" />
+
+
+                                        <Label
+                                            Grid.Row="2"
+                                            Grid.Column="1"
+                                            Text="{Binding CurrentSendingFileName}"
+                                            TextColor="Black" />
+
+                                        <Label
+                                            Grid.Row="3"
+                                            Grid.Column="1"
+                                            Text="{Binding CurrentSendingFileSize}"
+                                            TextColor="Black" />
+
+                                        <Label
+                                            Grid.Row="4"
+                                            Grid.Column="1"
+                                            Text="60 seconds"
+                                            TextColor="Black" />
+
+
+
+
+
+
+
+                                    </Grid>
+
+
+
+                                    <Grid Grid.Row="2" IsVisible="{Binding IsReceivingFile}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="5" />
+                                            <RowDefinition Height="auto" />
+                                            <RowDefinition Height="auto" />
+                                            <RowDefinition Height="auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            FontSize="18"
+                                            Text="Incoming Files"
+                                            TextColor="Black" />
+                                        <Label
+                                            Grid.Row="2"
+                                            Grid.Column="0"
+                                            Text="Receiving"
+                                            TextColor="Black" />
+                                        <Label
+                                            Grid.Row="3"
+                                            Grid.Column="0"
+                                            Text="Speed"
+                                            TextColor="Black" />
+                                        <Label
+                                            Grid.Row="4"
+                                            Grid.Column="0"
+                                            Text="ETA"
+                                            TextColor="Black" />
+
+
+
+                                        <Label
+                                            Grid.Row="2"
+                                            Grid.Column="1"
+                                            Text="{Binding CurrentReceivingFileName}"
+                                            TextColor="Black" />
+
+                                        <Label
+                                            Grid.Row="3"
+                                            Grid.Column="1"
+                                            Text="{Binding CurrentReceivingFileSize}"
+                                            TextColor="Black" />
+                                        <Label
+                                            Grid.Row="4"
+                                            Grid.Column="1"
+                                            Text="60 seconds"
+                                            TextColor="Black" />
+
+
+                                        <ProgressBar
+                                            Grid.Row="5"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="2"
+                                            IsEnabled="True"
+                                            IsVisible="true"
+                                            Progress="{Binding CurrentSendingFilePercentage}" />
+
+
+
+
+                                    </Grid>
+
+
+
+
+                                </Grid>
+                            </controls:MaterialCard>
+
+                        </StackLayout>
+
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </StackLayout>
+
+
+
+    </ContentPage.Content>
+</ContentPage>
