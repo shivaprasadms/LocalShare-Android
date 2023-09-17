@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace LocalShareApp.Services
 {
     public class FileReceivingService
@@ -42,6 +43,8 @@ namespace LocalShareApp.Services
 
                          string fileSize = fileInfoArray[1];
 
+                         string type = fileInfoArray[2];
+
                          long fileSizeBytes = long.Parse(fileSize);
 
                          long pg = long.Parse(fileSize);
@@ -50,7 +53,17 @@ namespace LocalShareApp.Services
 
                          //await stream.WriteAsync(Encoding.UTF8.GetBytes("Start"), 0, 5);
 
-                         using (FileStream fileStream = new FileStream($"/storage/emulated/0/localshare/{fileName}", FileMode.Create))
+
+
+                         var savePath = $"/storage/emulated/0/localshare{type}";
+
+                         if (!(type.Equals("/")))
+                         {
+                             Directory.CreateDirectory(savePath);
+                         }
+
+
+                         using (FileStream fileStream = new FileStream($"{savePath}/{fileName}", FileMode.Create))
                          {
                              byte[] buffer = new byte[8192];
 

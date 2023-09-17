@@ -16,18 +16,22 @@ namespace LocalShareApp.Services
 
 
 
-            string multicastIPAddress = "239.0.0.1"; // Multicast IP address (use a valid multicast IP)
-            int multicastPort = 42345; // Multicast port number (use any available port)
+            string multicastIPAddress = "226.1.1.1";
+
+            int multicastPort = 52345;
 
             UdpClient udpClient = new UdpClient();
 
-            // Join the multicast group
             IPAddress multicastAddress = IPAddress.Parse(multicastIPAddress);
-            udpClient.JoinMulticastGroup(multicastAddress);
-            udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
+            // udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
             IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, multicastPort);
             udpClient.Client.Bind(endPoint);
+
+            udpClient.JoinMulticastGroup(multicastAddress);
+
+            udpClient.EnableBroadcast = true;
 
             try
             {
@@ -40,6 +44,7 @@ namespace LocalShareApp.Services
                     int port = Convert.ToInt32(message);
 
                     await TcpManager.ConnectToHost(result.RemoteEndPoint.Address.ToString(), port);
+
 
                     // await Task.Delay(2000);
 

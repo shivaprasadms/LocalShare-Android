@@ -7,6 +7,7 @@ using Android.Provider;
 using LocalShareApp.Droid.Services;
 using LocalShareApp.Interfaces;
 using System;
+using System.IO;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -30,6 +31,8 @@ namespace LocalShareApp.Droid
 
 
             CheckAndRequestPermissions();
+
+            Directory.CreateDirectory("/storage/emulated/0/localshare");
 
             /*
             var fileService = DependencyService.Get<IFileService>();
