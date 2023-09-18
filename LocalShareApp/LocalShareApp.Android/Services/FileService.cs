@@ -1,12 +1,9 @@
-﻿using System;
+﻿using LocalShareApp.Interfaces;
+using MyXamarinApp.Droid.Services;
+using System;
 using System.IO;
 using System.Threading.Tasks;
-using Android.OS;
-using LocalShareApp.Interfaces;
-using LocalShareApp.Droid.Services;
-using LocalShareApp.Services;
 using Xamarin.Forms;
-using MyXamarinApp.Droid.Services;
 
 [assembly: Dependency(typeof(FileService))]
 namespace MyXamarinApp.Droid.Services

@@ -51,11 +51,7 @@ namespace LocalShareApp.Services
 
                          DisplayStats(fileName, fileSize, host);
 
-                         //await stream.WriteAsync(Encoding.UTF8.GetBytes("Start"), 0, 5);
-
-
-
-                         var savePath = $"/storage/emulated/0/localshare{type}";
+                         var savePath = $"/storage/emulated/0/localshare{type}"; // fix extra / for single file
 
                          if (!(type.Equals("/")))
                          {

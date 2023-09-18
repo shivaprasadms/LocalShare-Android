@@ -2,8 +2,11 @@
 using Android.Content;
 using Android.Content.PM;
 using Android.Database;
+using Android.Net.Wifi;
 using Android.OS;
 using Android.Provider;
+using Android.Widget;
+using Google.Android.Material.Snackbar;
 using LocalShareApp.Droid.Services;
 using LocalShareApp.Interfaces;
 using System;
@@ -21,6 +24,8 @@ namespace LocalShareApp.Droid
     {
         public static MainActivity Instance { get; private set; }
 
+        private WifiManager.MulticastLock _lock;
+
         protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -32,16 +37,14 @@ namespace LocalShareApp.Droid
 
             CheckAndRequestPermissions();
 
-            Directory.CreateDirectory("/storage/emulated/0/localshare");
+            CheckIfAppFilesExists();
 
-            /*
-            var fileService = DependencyService.Get<IFileService>();
+            AcquireMulticastLock();
 
-            if (fileService != null)
-            {
-                await fileService.WriteFileAsync("example.txt", "Hello, Xamarin!");
-            }
-            */
+
+
+
+
         }
 
 
@@ -74,20 +77,72 @@ namespace LocalShareApp.Droid
 
         private async void CheckAndRequestPermissions()
         {
-            var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
-            if (status != PermissionStatus.Granted)
+
+            if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
             {
-                status = await Permissions.RequestAsync<Permissions.StorageWrite>();
+                if (!Android.OS.Environment.IsExternalStorageManager)
+                {
+                    Snackbar.Make(FindViewById(Android.Resource.Id.Content), "Permission needed!", Snackbar.LengthIndefinite)
+                            .SetAction("Settings", (Android.Views.View view) =>
+                            {
+                                Android.Net.Uri uri = Android.Net.Uri.Parse("package:" + Android.App.Application.Context.ApplicationInfo.PackageName);
+                                Intent intent = new Intent(Android.Provider.Settings.ActionManageAppAllFilesAccessPermission, uri);
+                                Instance.StartActivity(intent);
+
+                            }).Show();
+                }
+            }
+            else
+            {
+                var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
                 if (status != PermissionStatus.Granted)
                 {
-                    // Handle the case where permission is not granted by showing a message to the user.
+                    status = await Permissions.RequestAsync<Permissions.StorageWrite>();
+                    if (status != PermissionStatus.Granted)
+                    {
+                        // Handle the case where permission is not granted by showing a message to the user.
+                    }
                 }
+            }
+
+        }
+
+
+        private void AcquireMulticastLock()
+        {
+            var wifiManager = (WifiManager)GetSystemService(Context.WifiService);
+
+            if (wifiManager != null)
+            {
+
+                // _lock is a private member WifiManager.MulticastLock _lock
+                _lock = wifiManager.CreateMulticastLock("lock");
+
+                if (_lock != null)
+                {
+                    _lock.Acquire();
+                    Toast.MakeText(this, "MulticastLock Acquired", ToastLength.Short).Show();
+                }
+                else
+                {
+                    Toast.MakeText(this, "Could not acquire multicast lock", ToastLength.Short).Show();
+                    // Debug.WriteLine("Could not acquire multicast lock"); // Does not print, meaning I do acquire the lock (and _lock.IsHeld() returns true)
+                }
+            }
+            else
+            {
+                Toast.MakeText(this, "MulticastLock is NULL", ToastLength.Short).Show();
             }
         }
 
 
+        private void CheckIfAppFilesExists()
+        {
+            Directory.CreateDirectory("/storage/emulated/0/localshare");
+        }
 
 
+        #region Get actual file path from file URI
 
         public string GetActualPathFromFile(Android.Net.Uri uri)
         {
@@ -231,7 +286,7 @@ namespace LocalShareApp.Droid
 
 
 
-
+        #endregion
 
 
 
