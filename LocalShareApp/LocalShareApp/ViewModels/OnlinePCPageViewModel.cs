@@ -1,19 +1,9 @@
-﻿using Android.App;
-using Android.Content;
-using LocalShareApp.Interfaces;
+﻿using LocalShareApp.Interfaces;
 using LocalShareApp.Models;
 using LocalShareApp.Services;
-using LocalShareApp.Utility;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Net.Sockets;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace LocalShareApp.ViewModels
@@ -24,7 +14,7 @@ namespace LocalShareApp.ViewModels
 
         //public ObservableCollection<TcpHostModel> Hosts { get; } = ActiveTcpConnections.Instance.Connections;
 
-        
+
 
         public ActiveTcpConnections Hosts { get; set; } = ActiveTcpConnections.Instance;
 
@@ -36,27 +26,32 @@ namespace LocalShareApp.ViewModels
         {
             messageService = DependencyService.Get<Interfaces.IMessageService>();
             TcpManager.HostFoundEvent += OnHostDetected;
-           // Hosts.Add(new TcpHostModel("APPu", "192.168.0.108", new TcpClient()));
+            // Hosts.Add(new TcpHostModel("APPu", "192.168.0.108", new TcpClient()));
             SendFileCommand = new Command(OpenSendFileDialogAsync);
-           
+
         }
 
-        
+
 
         private async void OpenSendFileDialogAsync(object obj)
         {
             try
             {
                 var filePicker = DependencyService.Get<IFilePicker>();
-                var filePath = await filePicker.PickAFile();
+                var filePath = await filePicker.PickFiles();
 
 
-                if (!string.IsNullOrEmpty(filePath))                
-                {
+                await FileTransferService.SendToHost("192.168.0.108", filePath);
 
-                   await  messageService.ShowAsync(filePath);
-                    await FileTransferService.SendToHost("192.168.0.108", filePath);
-                }
+                //var host = obj as TcpHostModel;
+
+
+                //if (!string.IsNullOrEmpty(filePath))
+                //{
+
+                //    await messageService.ShowAsync(filePath);
+                //    await FileTransferService.SendToHost("192.168.0.108", filePath);
+                //}
 
             }
             catch (Exception ex)
@@ -70,9 +65,9 @@ namespace LocalShareApp.ViewModels
 
         #region This section handles the code for loading spinner at the startup of the app while finding for the host
 
-        private bool LoadingStackLayoutVisible=true;
+        private bool LoadingStackLayoutVisible = true;
 
-      
+
         public bool IsStackLayoutVisible
         {
             get { return LoadingStackLayoutVisible; }
@@ -90,7 +85,7 @@ namespace LocalShareApp.ViewModels
 
 
 
-    
+
         public ICommand SendFileCommand { get; set; }
 
 
@@ -100,7 +95,7 @@ namespace LocalShareApp.ViewModels
 
         private void OnHostDetected(object sender, TcpClient client)
         {
-             IsStackLayoutVisible = false;
+            IsStackLayoutVisible = false;
 
             try
             {

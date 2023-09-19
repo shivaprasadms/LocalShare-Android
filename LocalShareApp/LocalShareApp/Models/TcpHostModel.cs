@@ -1,4 +1,6 @@
 ﻿using LocalShareApp.ViewModels;
+using System;
+using System.Collections.Concurrent;
 using System.Net.Sockets;
 
 namespace LocalShareApp.Models
@@ -11,6 +13,7 @@ namespace LocalShareApp.Models
             HostPcName = hostName;
             HostPcIP = hostIp;
             Host = host;
+            FilePathQueue = new ConcurrentQueue<Tuple<string, string[]>>();
         }
 
 
@@ -66,7 +69,25 @@ namespace LocalShareApp.Models
             }
         }
 
-        private string currentReceivingFileName = "nyll";
+        private string currentSendingFileSpeed;
+
+        public string CurrentSendingFileSpeed
+        {
+            get { return currentSendingFileSpeed; }
+            set { currentSendingFileSpeed = value; }
+        }
+
+        private string currentReceivingFileSpeed;
+
+        public string CurrentReceivingFileSpeed
+        {
+            get { return currentReceivingFileSpeed; }
+            set { currentReceivingFileSpeed = value; }
+        }
+
+
+
+        private string currentReceivingFileName = "";
 
         public string CurrentReceivingFileName
         {
@@ -117,10 +138,37 @@ namespace LocalShareApp.Models
             set { SetProperty(ref currentSendingFilePercentage, value, nameof(CurrentSendingFilePercentage)); }
         }
 
+        private double currentReceivingFilePercentage;
+
+        public double CurrentReceivingFilePercentage
+        {
+            get { return currentReceivingFilePercentage; }
+            set { SetProperty(ref currentReceivingFilePercentage, value, nameof(CurrentReceivingFilePercentage)); }
+        }
 
 
 
 
+        private ConcurrentQueue<Tuple<string, string[]>> FilePathQueue;
+
+
+
+        public void AddFilesToQueue(Tuple<string, string[]> path)
+        {
+            FilePathQueue.Enqueue(path);
+        }
+
+        public Tuple<string, string[]> PopFileFromQueue()
+        {
+            Tuple<string, string[]> returnValue;
+            FilePathQueue.TryDequeue(out returnValue);
+            return returnValue;
+        }
+
+        public bool IsQueueEmpty()
+        {
+            return FilePathQueue.IsEmpty;
+        }
 
 
 

@@ -25,13 +25,16 @@ namespace LocalShareApp.Services
                      while (true)
                      {
 
-                         byte[] fileInfoBufferSize = new byte[3];
+                         byte[] filelen = new byte[1];
+                         await stream.ReadAsync(filelen, 0, 1);
 
-                         //await stream.ReadAsync(fileInfoBufferSize, 0, 3);
+                         byte[] fileInfoBufferSize = new byte[int.Parse(Encoding.UTF8.GetString(filelen))];
 
-                         //string size = Encoding.UTF8.GetString(fileInfoBufferSize);
+                         await stream.ReadAsync(fileInfoBufferSize, 0, fileInfoBufferSize.Length);
 
-                         byte[] fileInfoBuffer = new byte[275];
+                         string size = Encoding.UTF8.GetString(fileInfoBufferSize);
+
+                         byte[] fileInfoBuffer = new byte[int.Parse(size)];
 
                          await stream.ReadAsync(fileInfoBuffer, 0, fileInfoBuffer.Length);
 
@@ -66,10 +69,12 @@ namespace LocalShareApp.Services
                              int bytesRead;
                              long completed = 0;
 
-                             while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                             while ((bytesRead = await stream.ReadAsync(buffer, 0, (int)(fileSizeBytes > 8192 ? 8192 : fileSizeBytes))) > 0)
                              {
 
+
                                  await fileStream.WriteAsync(buffer, 0, bytesRead);
+
                                  fileSizeBytes -= bytesRead;
 
                                  if (fileSizeBytes <= 0) // optimize loop
@@ -77,14 +82,14 @@ namespace LocalShareApp.Services
 
                                  completed += bytesRead;
 
-                                 host.CurrentSendingFilePercentage = ((double)completed / pg);
+                                 host.CurrentReceivingFilePercentage = ((double)completed / pg);
 
                              }
 
 
                          }
 
-                         await stream.WriteAsync(Encoding.UTF8.GetBytes("Start"), 0, 4);
+                         //   await stream.WriteAsync(Encoding.UTF8.GetBytes("Done"), 0, 4);
 
 
 

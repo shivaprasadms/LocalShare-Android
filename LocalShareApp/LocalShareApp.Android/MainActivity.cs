@@ -61,7 +61,6 @@ namespace LocalShareApp.Droid
         {
             base.OnActivityResult(requestCode, resultCode, data);
 
-            // Get the IFilePicker implementation and call OnActivityResult
             var filePicker = DependencyService.Get<IFilePicker>() as FilePickerService;
 
             if (filePicker != null)

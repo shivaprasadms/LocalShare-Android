@@ -13,74 +13,113 @@ namespace LocalShareApp.Services
     public class FileTransferService
     {
 
-        public static async Task SendToHost(string hostIp, string path)
+        public static async Task SendToHost(string hostIp, Tuple<string, string[]> files)
         {
 
             var host = ActiveTcpConnections.Instance.Connections.FirstOrDefault(conn => conn.HostPcIP == hostIp);
 
-            try
-            {
+            host.AddFilesToQueue(files);
 
-                NetworkStream stream = host.Host.GetStream();
+            if (host.IsSendingFile) return;
 
+            var tsk = Task.Factory.StartNew(async () =>
+              {
 
-                string fileName = Path.GetFileName(path);
+                  try
+                  {
 
-                FileInfo fileInfo = new FileInfo(path);
+                      NetworkStream stream = host.Host.GetStream();
 
-                string fileSize = FormatFileSize.GetSize(fileInfo.Length);
+                      while (!host.IsQueueEmpty())
+                      {
+                          host.IsSendingFile = true;
 
-                long fileSizeInBytes = fileInfo.Length;
+                          var file = host.PopFileFromQueue();
 
-                string fileInfoString = $"{fileName}:{fileSizeInBytes}:";
+                          foreach (var path in file.Item2)
+                          {
 
-                byte[] fileInfobuffer = new byte[Encoding.UTF8.GetByteCount(fileInfoString)];
+                              string fileName = Path.GetFileName(path);
 
-                Encoding.UTF8.GetBytes(fileInfoString, 0, fileInfoString.Length, fileInfobuffer, 0);
+                              FileInfo fileInfo = new FileInfo(path);
 
-                await stream.WriteAsync(fileInfobuffer, 0, fileInfobuffer.Length);
+                              string fileSize = FormatFileSize.GetSize(fileInfo.Length);
 
-                host.CurrentSendingFileName = fileName;
-                host.CurrentSendingFileSize = fileSize;
+                              long fileSizeInBytes = fileInfo.Length;
 
+                              long pg = fileSizeInBytes;
 
-                using (FileStream fileStream = File.OpenRead(path))
-                {
-                    byte[] buffer = new byte[8192]; // 8 KB buffer
+                              string fileInfoString = $"{fileName}:{fileSizeInBytes}:{file.Item1}";
 
-                    host.IsSendingFile = true; // refactoring required
+                              byte[] fileInfobuffer = new byte[Encoding.UTF8.GetByteCount(fileInfoString)];
 
+                              Encoding.UTF8.GetBytes(fileInfoString, 0, fileInfoString.Length, fileInfobuffer, 0);
 
-                    int bytesRead = 0;
-                    long completed = 0;
+                              await stream.WriteAsync(fileInfobuffer, 0, fileInfobuffer.Length);
 
-                    var taskController = new CancellationTokenSource();
-                    var token = taskController.Token;
-
-
-
-
-                    while ((bytesRead = await fileStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-                    {
-                        await stream.WriteAsync(buffer, 0, bytesRead);
-
-                        completed += bytesRead;
-
-                    }
+                              host.CurrentSendingFileName = fileName;
+                              host.CurrentSendingFileSize = fileSize;
 
 
-                }
+                              using (FileStream fileStream = File.OpenRead(path))
+                              {
+                                  byte[] buffer = new byte[8192]; // 8 KB buffer
+
+                                  host.IsSendingFile = true; // refactoring required
+
+
+                                  int bytesRead = 0;
+                                  long completed = 0;
+
+                                  var taskController = new CancellationTokenSource();
+                                  var token = taskController.Token;
 
 
 
-                host.CurrentSendingFileName = " ";
 
-            }
-            catch (Exception ex)
-            {
+                                  while ((bytesRead = await fileStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                                  {
+                                      await stream.WriteAsync(buffer, 0, bytesRead);
 
-                Debug.WriteLine(ex.Message);
-            }
+                                      pg -= bytesRead;
+                                      if (pg < 0) break;
+
+                                      completed += bytesRead;
+
+
+
+                                      host.CurrentSendingFilePercentage = ((double)completed / fileSizeInBytes);
+
+                                  }
+
+
+                              }
+
+                              //  byte[] signal = new byte[3];
+
+
+
+
+                              // so no thread should access this when this reads the stream, the receiver can wait until 3 bytes of the stream are received here
+
+
+
+                              //   await stream.ReadAsync(signal, 0, 3);
+
+                              host.CurrentSendingFileName = " ";
+                              host.CurrentSendingFileSize = "";
+                          }
+                      }
+
+                      host.IsSendingFile = false;
+
+                  }
+                  catch (Exception ex)
+                  {
+
+                      Debug.WriteLine(ex.Message);
+                  }
+              }, TaskCreationOptions.LongRunning);
         }
 
 
