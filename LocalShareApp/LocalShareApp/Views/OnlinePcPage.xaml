@@ -38,15 +38,15 @@
 
                         <StackLayout>
                             <controls:MaterialCard>
-                                <Grid Padding="10">
+                                <Grid>
 
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="auto" />
                                         <RowDefinition Height="auto" />
-                                        <RowDefinition Height="auto" />
+
                                     </Grid.RowDefinitions>
 
-                                    <Grid Grid.Row="0">
+                                    <Grid Grid.Row="0" Padding="10">
 
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="auto" />
@@ -57,7 +57,8 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto" />
                                             <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="60" />
+                                            <ColumnDefinition Width="60" />
                                         </Grid.ColumnDefinitions>
 
 
@@ -73,17 +74,35 @@
                                             Text="{Binding HostPcIP}"
                                             TextColor="Black" />
 
-                                        <Button
-                                            Grid.RowSpan="2"
-                                            Grid.Column="2"
-                                            Background="#909090"
-                                            Command="{Binding SendFileCommand, Source={RelativeSource AncestorType={x:Type viewmodels:OnlinePCPageViewModel}}}"
-                                            Text="Send File"
-                                            VerticalOptions="Center" />
+
 
                                     </Grid>
 
-                                    <Grid Grid.Row="1" IsVisible="{Binding IsSendingFile}">
+                                    <Grid Grid.Row="1">
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="40" />
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Button
+                                            Grid.Column="0"
+                                            Command="{Binding SendFileCommand, Source={RelativeSource AncestorType={x:Type viewmodels:OnlinePCPageViewModel}}}"
+                                            Text="Send Files" />
+                                        <Button
+                                            Grid.Column="1"
+                                            Command="{Binding SendFolderCommand, Source={RelativeSource AncestorType={x:Type viewmodels:OnlinePCPageViewModel}}}"
+                                            Text="Send Folder" />
+                                    </Grid>
+
+                                    <Grid
+                                        Grid.Row="2"
+                                        Padding="10"
+                                        IsVisible="{Binding IsSendingFile}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="5" />
                                             <RowDefinition Height="auto" />
@@ -98,6 +117,8 @@
                                             <ColumnDefinition Width="*" />
 
                                         </Grid.ColumnDefinitions>
+
+
 
                                         <Label
                                             Grid.Row="1"
@@ -146,17 +167,16 @@
                                             Grid.ColumnSpan="2"
                                             IsEnabled="True"
                                             IsVisible="true"
-                                            Progress="{Binding CurrentSendingFilePercentage}" />
-
-
-
-
+                                            Progress="75" />
 
                                     </Grid>
 
 
 
-                                    <Grid Grid.Row="2" IsVisible="{Binding IsReceivingFile}">
+                                    <Grid
+                                        Grid.Row="3"
+                                        Padding="10"
+                                        IsVisible="{Binding IsReceivingFile}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="5" />
                                             <RowDefinition Height="auto" />
@@ -220,7 +240,7 @@
                                             Grid.ColumnSpan="2"
                                             IsEnabled="True"
                                             IsVisible="true"
-                                            Progress="{Binding CurrentReceivingFilePercentage}" />
+                                            Progress="55" />
 
 
 

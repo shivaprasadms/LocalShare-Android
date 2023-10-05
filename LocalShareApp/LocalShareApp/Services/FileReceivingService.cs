@@ -14,11 +14,12 @@ namespace LocalShareApp.Services
 
         public static async Task ReceiveFromHost()
         {
+            TcpHostModel host = ActiveTcpConnections.Instance.Connections.First();
+
+            NetworkStream stream = host.Host.GetStream();
+
             await Task.Factory.StartNew(async () =>
              {
-                 TcpHostModel host = ActiveTcpConnections.Instance.Connections.First();
-                 NetworkStream stream = host.Host.GetStream();
-
                  try
                  {
 
@@ -26,6 +27,7 @@ namespace LocalShareApp.Services
                      {
 
                          byte[] filelen = new byte[1];
+
                          await stream.ReadAsync(filelen, 0, 1);
 
                          byte[] fileInfoBufferSize = new byte[int.Parse(Encoding.UTF8.GetString(filelen))];
@@ -54,12 +56,14 @@ namespace LocalShareApp.Services
 
                          DisplayStats(fileName, fileSize, host);
 
-                         var savePath = $"/storage/emulated/0/localshare{type}"; // fix extra / for single file
+                         var savePath = $"/storage/emulated/0/localshare/{type}"; // fix extra / for single file
 
                          if (!(type.Equals("/")))
                          {
                              Directory.CreateDirectory(savePath);
                          }
+
+
 
 
                          using (FileStream fileStream = new FileStream($"{savePath}/{fileName}", FileMode.Create))

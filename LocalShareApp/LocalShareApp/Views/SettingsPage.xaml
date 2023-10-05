@@ -1,12 +1,128 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="LocalShareApp.Views.SettingsPage">
+<ContentPage
+    x:Class="LocalShareApp.Views.SettingsPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:LocalShareApp.Views.Controls">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+
+        <StackLayout Padding="10" BackgroundColor="{StaticResource Primary}">
+
+            <StackLayout Margin="0,10,0,10">
+                <Label
+                    Margin="15,0"
+                    FontSize="18"
+                    Text="Files Options"
+                    TextColor="Black" />
+
+                <controls:MaterialCard Padding="20">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+
+
+                        <Label
+                            Grid.Row="0"
+                            Margin="0,0,20,0"
+                            Text="View Received Files"
+                            TextColor="Black"
+                            VerticalTextAlignment="Center" />
+
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            HeightRequest="40"
+                            Text="Open Folder" />
+
+                        <!--<Label Grid.Row="1" Text="Change Save Path" TextColor="Black"/>
+
+                        <Entry Grid.Row="2"  IsReadOnly="True" Text="path here" BackgroundColor="{StaticResource Primary }" TextColor="Black" HeightRequest="40" />-->
+
+                    </Grid>
+
+
+
+
+                </controls:MaterialCard>
+            </StackLayout>
+
+            <StackLayout Margin="0,10,0,10">
+                <Label
+                    Margin="15,0"
+                    FontSize="18"
+                    Text="App Updates"
+                    TextColor="Black" />
+
+                <controls:MaterialCard Padding="20">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+
+
+                        <!--<Label
+                            Grid.Row="0"
+                            Text="Enable Automatic Updates"
+                            TextColor="Black" VerticalTextAlignment="Center" Margin="0 25 0 0" />
+
+                        <CheckBox Grid.Row="0" Grid.Column="1"/>-->
+
+                        <Label
+                            Grid.Row="0"
+                            Margin="0,0,25,0"
+                            Text="Check for Updates"
+                            TextColor="Black"
+                            VerticalTextAlignment="Center" />
+
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            HeightRequest="40"
+                            Text="Check" />
+
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,10"
+                            FontAttributes="Italic"
+                            Text="Last Checked : "
+                            TextColor="Black" />
+
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="0,10"
+                            FontAttributes="Italic"
+                            Text="DD:MM:YY"
+                            TextColor="Black" />
+
+
+                    </Grid>
+
+
+
+
+                </controls:MaterialCard>
+            </StackLayout>
+
+
+
         </StackLayout>
+
+
     </ContentPage.Content>
 </ContentPage>

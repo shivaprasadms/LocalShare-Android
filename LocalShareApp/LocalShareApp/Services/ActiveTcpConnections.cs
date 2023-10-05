@@ -1,10 +1,8 @@
 ﻿using LocalShareApp.Models;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
 namespace LocalShareApp.Services
 {
@@ -27,6 +25,7 @@ namespace LocalShareApp.Services
         {
 
             var obj = new TcpHostModel("APPUPC", ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString(), client);
+            //var obj = new TcpHostModel("APPUPC", "192.168.1.1", client);
 
             Connections.Add(obj);
 

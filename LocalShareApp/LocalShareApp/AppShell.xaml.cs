@@ -1,17 +1,11 @@
-﻿
-using LocalShareApp.Views;
-using System;
-using System.Collections.Generic;
-using Xamarin.Forms;
-
-namespace LocalShareApp
+﻿namespace LocalShareApp
 {
-    public partial class AppShell : Xamarin.Forms.Shell
+    public partial class AppShell : Xamarin.Forms.TabbedPage
     {
         public AppShell()
         {
             InitializeComponent();
-           
+
         }
 
     }

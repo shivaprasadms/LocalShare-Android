@@ -13,10 +13,6 @@ namespace LocalShareApp.Services
 
         public static async Task Listen()
         {
-
-
-
-
             string multicastIPAddress = "226.1.1.1";
 
             int multicastPort = 52345;
@@ -38,8 +34,6 @@ namespace LocalShareApp.Services
             {
                 while (true)
                 {
-
-
                     UdpReceiveResult result = await udpClient.ReceiveAsync();
 
                     string message = Encoding.UTF8.GetString(result.Buffer).Split(':').Last();

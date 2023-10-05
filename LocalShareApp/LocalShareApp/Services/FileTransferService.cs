@@ -16,7 +16,7 @@ namespace LocalShareApp.Services
         public static async Task SendToHost(string hostIp, Tuple<string, string[]> files)
         {
 
-            var host = ActiveTcpConnections.Instance.Connections.FirstOrDefault(conn => conn.HostPcIP == hostIp);
+            var host = ActiveTcpConnections.Instance.Connections.FirstOrDefault(conn => conn.HostPcName == "APPUPC");
 
             host.AddFilesToQueue(files);
 
@@ -39,6 +39,8 @@ namespace LocalShareApp.Services
                           foreach (var path in file.Item2)
                           {
 
+
+
                               string fileName = Path.GetFileName(path);
 
                               FileInfo fileInfo = new FileInfo(path);
@@ -54,6 +56,34 @@ namespace LocalShareApp.Services
                               byte[] fileInfobuffer = new byte[Encoding.UTF8.GetByteCount(fileInfoString)];
 
                               Encoding.UTF8.GetBytes(fileInfoString, 0, fileInfoString.Length, fileInfobuffer, 0);
+
+                              int length = 0;
+
+                              if (fileInfoString.Length > 0 && fileInfoString.Length < 9)
+                              {
+                                  length = 1;
+                              }
+                              else if (fileInfoString.Length > 10 && fileInfoString.Length < 99)
+                              {
+                                  length = 2;
+                              }
+                              else
+                              {
+                                  length = 3;
+                              }
+
+                              string len = length.ToString();
+
+
+                              int fileInfoStringByteCount = Encoding.UTF8.GetByteCount(fileInfoString);
+
+                              byte[] fileSizeHeader = new byte[fileInfoStringByteCount];
+                              fileSizeHeader = Encoding.UTF8.GetBytes(fileInfoString.Length.ToString());
+
+                              await stream.WriteAsync(Encoding.UTF8.GetBytes(len), 0, len.Length);
+
+                              await stream.WriteAsync(fileSizeHeader, 0, fileSizeHeader.Length);
+
 
                               await stream.WriteAsync(fileInfobuffer, 0, fileInfobuffer.Length);
 

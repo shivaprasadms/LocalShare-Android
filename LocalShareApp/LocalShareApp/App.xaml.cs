@@ -1,9 +1,5 @@
-﻿using LocalShareApp.Interfaces;
-using LocalShareApp.Services;
-using LocalShareApp.Views;
-using System;
+﻿using LocalShareApp.Services;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace LocalShareApp
 {
@@ -13,7 +9,6 @@ namespace LocalShareApp
         public App()
         {
             InitializeComponent();
-
 
             DependencyService.Register<Interfaces.IMessageService, Utility.MessageAlertDialog>();
             MainPage = new AppShell();

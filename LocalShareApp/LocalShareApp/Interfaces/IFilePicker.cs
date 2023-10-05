@@ -7,5 +7,7 @@ namespace LocalShareApp.Interfaces
     {
         Task<Tuple<string, string[]>> PickFiles();
 
+        Task<Tuple<string, string[]>> PickFolder();
+
     }
 }

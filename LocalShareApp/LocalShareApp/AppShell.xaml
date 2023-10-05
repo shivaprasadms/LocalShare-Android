@@ -1,17 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Shell xmlns="http://xamarin.com/schemas/2014/forms" 
-       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:local="clr-namespace:LocalShareApp.Views"
-       Title="LocalShareApp"
-       x:Class="LocalShareApp.AppShell">
+<?xml version="1.0" encoding="UTF-8" ?>
+<TabbedPage
+    x:Class="LocalShareApp.AppShell"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:LocalShareApp.Views"
+    xmlns:localshareapp="clr-namespace:LocalShareApp"
+    Title="LocalShareApp"
+    x:DataType="localshareapp:AppShell"
+    Shell.FlyoutBehavior="Disabled">
 
     <!--
         The overall app visual hierarchy is defined here, along with navigation.
-    
+        
         https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/shell/
     -->
 
-    <Shell.Resources>
+    <TabbedPage.Resources>
         <ResourceDictionary>
             <Style x:Key="BaseStyle" TargetType="Element">
                 <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />
@@ -20,28 +24,37 @@
                 <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
                 <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
                 <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Primary}" />
-                <Setter Property="Shell.TabBarForegroundColor" Value="Black"/>
-                <Setter Property="Shell.TabBarUnselectedColor" Value="#808080"/>
-                <Setter Property="Shell.TabBarTitleColor" Value="Black"/>
-                
+                <Setter Property="Shell.TabBarForegroundColor" Value="Black" />
+                <Setter Property="Shell.TabBarUnselectedColor" Value="#808080" />
+                <Setter Property="Shell.TabBarTitleColor" Value="Black" />
+
             </Style>
-            <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
-            <Style TargetType="FlyoutItem" BasedOn="{StaticResource BaseStyle}" />
+            <Style BasedOn="{StaticResource BaseStyle}" TargetType="TabBar" />
+            <Style BasedOn="{StaticResource BaseStyle}" TargetType="FlyoutItem" />
         </ResourceDictionary>
-    </Shell.Resources>
+    </TabbedPage.Resources>
 
 
-    <TabBar>
-        
-        
+    <TabbedPage.Children>
 
-        <ShellContent Title="Online PC" Icon="icon_about.png" Route="OnlinePcPage" ContentTemplate="{DataTemplate local:OnlinePcPage}" />
-        
-        <ShellContent Title="Settings" Icon="icon_about.png" Route="SettingsPage" ContentTemplate="{DataTemplate local:SettingsPage}" />
+        <NavigationPage Title="Online PC">
+            <x:Arguments>
+                <local:OnlinePcPage />
+            </x:Arguments>
+        </NavigationPage>
+        <NavigationPage Title="Settings">
+            <x:Arguments>
+                <local:SettingsPage />
+            </x:Arguments>
+        </NavigationPage>
+        <NavigationPage Title="About">
+            <x:Arguments>
+                <local:AboutPage />
+            </x:Arguments>
+        </NavigationPage>
+    </TabbedPage.Children>
 
-        <ShellContent Title="About" Icon="icon_about.png" Route="AboutPage" ContentTemplate="{DataTemplate local:AboutPage}" />
-       
-    </TabBar>
+
 
     <!--
         If you would like to navigate to this content you can do so by calling
@@ -50,4 +63,4 @@
 
 
 
-</Shell>
+</TabbedPage>

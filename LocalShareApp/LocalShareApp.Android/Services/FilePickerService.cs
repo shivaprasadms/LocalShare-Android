@@ -10,6 +10,7 @@ namespace LocalShareApp.Droid.Services
     public class FilePickerService : IFilePicker
     {
         private static int FILE_PICKER_REQUEST = 1;
+        private static int FOLDER_PICKER_REQUEST = 2;
 
         private TaskCompletionSource<Tuple<string, string[]>> tcs;
 
@@ -64,8 +65,29 @@ namespace LocalShareApp.Droid.Services
                     tcs.SetResult(null);
                 }
             }
+            else if (requestCode == FOLDER_PICKER_REQUEST)
+            {
+                if (resultCode == Result.Ok)
+                {
+                    if (null != data)
+                    {
+
+                    }
+                }
+            }
         }
 
+        public async Task<Tuple<string, string[]>> PickFolder()
+        {
+            tcs = new TaskCompletionSource<Tuple<string, string[]>>();
 
+            Intent intent = new Intent(Intent.ActionOpenDocumentTree);
+            intent.AddCategory(Android.Content.Intent.CategoryOpenable);
+            //intent.AddFlags(ActivityFlags.GrantPersistableUriPermission);
+
+            MainActivity.Instance.StartActivityForResult(intent, FOLDER_PICKER_REQUEST);
+
+            return await tcs.Task;
+        }
     }
 }
