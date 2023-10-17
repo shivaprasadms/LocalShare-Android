@@ -3,6 +3,8 @@ using Android.Content;
 using LocalShareApp.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace LocalShareApp.Droid.Services
@@ -12,11 +14,12 @@ namespace LocalShareApp.Droid.Services
         private static int FILE_PICKER_REQUEST = 1;
         private static int FOLDER_PICKER_REQUEST = 2;
 
-        private TaskCompletionSource<Tuple<string, string[]>> tcs;
+        private TaskCompletionSource<string[]> tcsFile;
+        private TaskCompletionSource<string> tcsFolder;
 
-        public async Task<Tuple<string, string[]>> PickFiles()
+        public async Task<string[]> PickFiles()
         {
-            tcs = new TaskCompletionSource<Tuple<string, string[]>>();
+            tcsFile = new TaskCompletionSource<string[]>();
 
             Intent intent = new Intent(Intent.ActionOpenDocument);
             intent.AddCategory(Android.Content.Intent.CategoryOpenable);
@@ -25,7 +28,7 @@ namespace LocalShareApp.Droid.Services
 
             MainActivity.Instance.StartActivityForResult(intent, FILE_PICKER_REQUEST);
 
-            return await tcs.Task;
+            return await tcsFile.Task;
         }
 
         public void OnActivityResult(int requestCode, Result resultCode, Intent data)
@@ -51,43 +54,79 @@ namespace LocalShareApp.Droid.Services
                             actualPaths.Add(MainActivity.Instance.GetActualPathFromFile(data.Data));
                         }
 
-                        tcs.SetResult(new Tuple<string, string[]>("/", actualPaths.ToArray()));
+                        tcsFile.SetResult(actualPaths.ToArray());
 
                     }
 
-                    //Android.Net.Uri uri = data.Data;
-
-                    //string filePath = MainActivity.Instance.GetActualPathFromFile(uri);
-                    //tcs.SetResult(filePath);
                 }
                 else
                 {
-                    tcs.SetResult(null);
+                    tcsFile.SetResult(null);
                 }
             }
             else if (requestCode == FOLDER_PICKER_REQUEST)
             {
                 if (resultCode == Result.Ok)
                 {
-                    if (null != data)
+                    if (data != null)
                     {
 
+                        string path = WebUtility.UrlDecode(data.DataString);
+                        string folder = path.Split(":").Last();
+                        tcsFolder.SetResult($"/storage/emulated/0/{folder}");
+                    }
+                    else
+                    {
+                        tcsFolder.SetResult(null);
                     }
                 }
             }
         }
 
-        public async Task<Tuple<string, string[]>> PickFolder()
+        public async Task<string> PickFolder()
         {
-            tcs = new TaskCompletionSource<Tuple<string, string[]>>();
+            tcsFolder = new TaskCompletionSource<string>();
 
-            Intent intent = new Intent(Intent.ActionOpenDocumentTree);
-            intent.AddCategory(Android.Content.Intent.CategoryOpenable);
-            //intent.AddFlags(ActivityFlags.GrantPersistableUriPermission);
+            Intent intent2 = new Intent(Intent.ActionOpenDocumentTree);
 
-            MainActivity.Instance.StartActivityForResult(intent, FOLDER_PICKER_REQUEST);
+            intent2.PutExtra("android.content.extra.SHOW_ADVANCED", true);
+            intent2.PutExtra("android.content.extra.FANCY", true);
+            intent2.PutExtra("android.content.extra.SHOW_FILESIZE", true);
 
-            return await tcs.Task;
+
+            MainActivity.Instance.StartActivityForResult(intent2, FOLDER_PICKER_REQUEST);
+
+            return await tcsFolder.Task;
         }
+
+        public async Task OpenFolder(string folderPath)
+        {
+            var rootPath = "content://com.android.externalstorage.documents/document/primary:";
+            var savePath = Android.Net.Uri.Parse($"{rootPath}%2flocalshare");
+
+            Intent intent = new Intent(Intent.ActionView);
+
+
+
+            intent.SetDataAndType(savePath, "*/*");
+            intent.SetFlags(ActivityFlags.NewTask);
+            intent.SetPackage("com.google.android.documentsui");
+
+
+            try
+            {
+                Application.Context.StartActivity(intent);
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here (e.g., folderPath does not exist)
+            }
+
+
+
+        }
+
+
+
     }
 }

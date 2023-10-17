@@ -1,6 +1,7 @@
 ﻿using LocalShareApp.ViewModels;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Net.Sockets;
 
 namespace LocalShareApp.Models
@@ -74,7 +75,7 @@ namespace LocalShareApp.Models
         public string CurrentSendingFileSpeed
         {
             get { return currentSendingFileSpeed; }
-            set { currentSendingFileSpeed = value; }
+            set { SetProperty(ref currentSendingFileSpeed, value, nameof(CurrentSendingFileSpeed)); }
         }
 
         private string currentReceivingFileSpeed;
@@ -82,7 +83,7 @@ namespace LocalShareApp.Models
         public string CurrentReceivingFileSpeed
         {
             get { return currentReceivingFileSpeed; }
-            set { currentReceivingFileSpeed = value; }
+            set { SetProperty(ref currentReceivingFileSpeed, value, nameof(CurrentReceivingFileSpeed)); }
         }
 
 
@@ -153,9 +154,11 @@ namespace LocalShareApp.Models
 
 
 
-        public void AddFilesToQueue(Tuple<string, string[]> path)
+        public void AddFilesToQueue(List<Tuple<string, string[]>> fileList)
         {
-            FilePathQueue.Enqueue(path);
+
+            foreach (var path in fileList)
+                FilePathQueue.Enqueue(path);
         }
 
         public Tuple<string, string[]> PopFileFromQueue()
@@ -170,6 +173,15 @@ namespace LocalShareApp.Models
             return FilePathQueue.IsEmpty;
         }
 
+        public void ResetProperties()
+        {
+
+            CurrentSendingFileName = "";
+            CurrentSendingFilePercentage = 0;
+            CurrentSendingFileName = "";
+            CurrentSendingFileSize = "";
+            CurrentSendingFileSpeed = "";
+        }
 
 
 

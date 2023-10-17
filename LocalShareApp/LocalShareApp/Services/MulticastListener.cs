@@ -10,8 +10,14 @@ namespace LocalShareApp.Services
 {
     public class MulticastListener
     {
+        private readonly TcpManager _tcpManager;
 
-        public static async Task Listen()
+        public MulticastListener(TcpManager tcpManager)
+        {
+            _tcpManager = tcpManager;
+        }
+
+        public async Task Listen()
         {
             string multicastIPAddress = "226.1.1.1";
 
@@ -40,7 +46,7 @@ namespace LocalShareApp.Services
 
                     int port = Convert.ToInt32(message);
 
-                    await TcpManager.ConnectToHost(result.RemoteEndPoint.Address.ToString(), port);
+                    await _tcpManager.ConnectToHost(result.RemoteEndPoint.Address.ToString(), port);
 
 
                     // await Task.Delay(2000);

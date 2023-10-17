@@ -6,9 +6,9 @@
     xmlns:controls="clr-namespace:LocalShareApp.Views.Controls"
     xmlns:viewmodels="clr-namespace:LocalShareApp.ViewModels">
 
-    <ContentPage.BindingContext>
+    <!--<ContentPage.BindingContext>
         <viewmodels:OnlinePCPageViewModel />
-    </ContentPage.BindingContext>
+    </ContentPage.BindingContext>-->
 
 
     <ContentPage.Content>
@@ -41,6 +41,8 @@
                                 <Grid>
 
                                     <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
                                         <RowDefinition Height="auto" />
                                         <RowDefinition Height="auto" />
 
@@ -91,11 +93,13 @@
 
                                         <Button
                                             Grid.Column="0"
-                                            Command="{Binding SendFileCommand, Source={RelativeSource AncestorType={x:Type viewmodels:OnlinePCPageViewModel}}}"
+                                            Command="{Binding BindingContext.SendFileCommand, Source={RelativeSource AncestorType={x:Type CollectionView}}}"
+                                            CommandParameter="{Binding}"
                                             Text="Send Files" />
                                         <Button
                                             Grid.Column="1"
                                             Command="{Binding SendFolderCommand, Source={RelativeSource AncestorType={x:Type viewmodels:OnlinePCPageViewModel}}}"
+                                            CommandParameter="{Binding}"
                                             Text="Send Folder" />
                                     </Grid>
 
@@ -129,17 +133,17 @@
                                         <Label
                                             Grid.Row="2"
                                             Grid.Column="0"
-                                            Text="Sending"
+                                            Text="File Name"
                                             TextColor="Black" />
                                         <Label
                                             Grid.Row="3"
                                             Grid.Column="0"
-                                            Text="Speed"
+                                            Text="File Size"
                                             TextColor="Black" />
                                         <Label
                                             Grid.Row="4"
                                             Grid.Column="0"
-                                            Text="ETA"
+                                            Text="Speed"
                                             TextColor="Black" />
 
 
@@ -152,13 +156,13 @@
                                         <Label
                                             Grid.Row="3"
                                             Grid.Column="1"
-                                            Text="{Binding CurrentSendingFileSpeed}"
+                                            Text="{Binding CurrentSendingFileSize}"
                                             TextColor="Black" />
 
                                         <Label
                                             Grid.Row="4"
                                             Grid.Column="1"
-                                            Text="N.A"
+                                            Text="{Binding CurrentSendingFileSpeed}"
                                             TextColor="Black" />
 
                                         <ProgressBar
@@ -167,7 +171,7 @@
                                             Grid.ColumnSpan="2"
                                             IsEnabled="True"
                                             IsVisible="true"
-                                            Progress="75" />
+                                            Progress="{Binding CurrentSendingFilePercentage}" />
 
                                     </Grid>
 
@@ -225,12 +229,12 @@
                                         <Label
                                             Grid.Row="3"
                                             Grid.Column="1"
-                                            Text="{Binding CurrentReceivingFileSpeed}"
+                                            Text="{Binding CurrentReceivingFileSize}"
                                             TextColor="Black" />
                                         <Label
                                             Grid.Row="4"
                                             Grid.Column="1"
-                                            Text="N.A"
+                                            Text="{Binding CurrentReceivingFileSpeed}"
                                             TextColor="Black" />
 
 
@@ -240,7 +244,7 @@
                                             Grid.ColumnSpan="2"
                                             IsEnabled="True"
                                             IsVisible="true"
-                                            Progress="55" />
+                                            Progress="{Binding CurrentReceivingFilePercentage}" />
 
 
 

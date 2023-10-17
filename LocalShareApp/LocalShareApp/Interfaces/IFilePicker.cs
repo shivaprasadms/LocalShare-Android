@@ -1,13 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace LocalShareApp.Interfaces
 {
     public interface IFilePicker
     {
-        Task<Tuple<string, string[]>> PickFiles();
+        Task<string[]> PickFiles();
 
-        Task<Tuple<string, string[]>> PickFolder();
+        Task<string> PickFolder();
+
+        Task OpenFolder(string folderPath);
 
     }
 }

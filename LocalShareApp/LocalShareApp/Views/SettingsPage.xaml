@@ -3,7 +3,14 @@
     x:Class="LocalShareApp.Views.SettingsPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:LocalShareApp.Views.Controls">
+    xmlns:controls="clr-namespace:LocalShareApp.Views.Controls"
+    xmlns:viewmodels="clr-namespace:LocalShareApp.ViewModels">
+
+    <ContentPage.BindingContext>
+        <viewmodels:SettingsPageViewModel />
+    </ContentPage.BindingContext>
+
+
     <ContentPage.Content>
 
         <StackLayout Padding="10" BackgroundColor="{StaticResource Primary}">
@@ -39,6 +46,7 @@
                         <Button
                             Grid.Row="0"
                             Grid.Column="1"
+                            Command="{Binding OpenSaveDirectory}"
                             HeightRequest="40"
                             Text="Open Folder" />
 
@@ -92,6 +100,7 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             HeightRequest="40"
+                            Command="{Binding CheckAppUpdates}"
                             Text="Check" />
 
                         <Label
@@ -107,7 +116,7 @@
                             Grid.Column="1"
                             Margin="0,10"
                             FontAttributes="Italic"
-                            Text="DD:MM:YY"
+                            Text="{Binding AppUpdateLastChecked}"
                             TextColor="Black" />
 
 

@@ -1,7 +1,4 @@
 ﻿using LocalShareApp.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LocalShareApp.Utility
@@ -11,7 +8,7 @@ namespace LocalShareApp.Utility
 
         public async Task ShowAsync(string message)
         {
-            await App.Current.MainPage.DisplayAlert("YourApp", message, "Ok");
+            await App.Current.MainPage.DisplayAlert("LocalShare", message, "OK");
         }
     }
 }

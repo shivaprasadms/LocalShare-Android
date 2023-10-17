@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalShareApp.Android", "LocalShareApp\LocalShareApp.Android\LocalShareApp.Android.csproj", "{3E458B30-29AB-48E5-83DA-F00BAC4631D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalShareApp", "LocalShareApp\LocalShareApp\LocalShareApp.csproj", "{E175ED2C-5F7E-4209-B513-AB420B00AF04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocalShareApp", "LocalShareApp\LocalShareApp\LocalShareApp.csproj", "{E175ED2C-5F7E-4209-B513-AB420B00AF04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

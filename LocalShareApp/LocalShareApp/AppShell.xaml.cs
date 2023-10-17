@@ -1,6 +1,8 @@
-﻿namespace LocalShareApp
+﻿using LocalShareApp.Views;
+
+namespace LocalShareApp
 {
-    public partial class AppShell : Xamarin.Forms.TabbedPage
+    public partial class AppShell : CustomTabbedPage
     {
         public AppShell()
         {

@@ -1,4 +1,5 @@
-﻿using Android.App;
+﻿using Android;
+using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.Database;
@@ -11,7 +12,6 @@ using LocalShareApp.Droid.Services;
 using LocalShareApp.Interfaces;
 using System;
 using System.IO;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(FilePickerService))]
@@ -32,8 +32,6 @@ namespace LocalShareApp.Droid
             Instance = this;
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            LoadApplication(new App());
-
 
             CheckAndRequestPermissions();
 
@@ -41,6 +39,8 @@ namespace LocalShareApp.Droid
 
             AcquireMulticastLock();
 
+
+            LoadApplication(new App());
 
 
 
@@ -70,14 +70,12 @@ namespace LocalShareApp.Droid
 
 
 
-
-
         }
 
         private async void CheckAndRequestPermissions()
         {
 
-            if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
+            if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
             {
                 if (!Android.OS.Environment.IsExternalStorageManager)
                 {
@@ -93,15 +91,28 @@ namespace LocalShareApp.Droid
             }
             else
             {
-                var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
-                if (status != PermissionStatus.Granted)
+
+                if (PackageManager.CheckPermission(Manifest.Permission.ReadExternalStorage, PackageName) != Permission.Granted
+                  && PackageManager.CheckPermission(Manifest.Permission.WriteExternalStorage, PackageName) != Permission.Granted)
                 {
-                    status = await Permissions.RequestAsync<Permissions.StorageWrite>();
-                    if (status != PermissionStatus.Granted)
-                    {
-                        // Handle the case where permission is not granted by showing a message to the user.
-                    }
+                    var permissions = new string[] { Manifest.Permission.ReadExternalStorage, Manifest.Permission.WriteExternalStorage };
+                    RequestPermissions(permissions, 120);
                 }
+
+                //var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
+                //if (status != PermissionStatus.Granted)
+                //{
+                //    status = await Permissions.RequestAsync<Permissions.StorageWrite>();
+
+                //    if (status != PermissionStatus.Granted)
+                //    {
+                //        // Handle the case where permission is not granted by showing a message to the user.
+                //    }
+                //    else
+                //    {
+
+                //    }
+                //}
             }
 
         }

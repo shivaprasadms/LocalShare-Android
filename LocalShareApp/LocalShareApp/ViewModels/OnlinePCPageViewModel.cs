@@ -1,4 +1,5 @@
 ﻿using LocalShareApp.Interfaces;
+using LocalShareApp.Models;
 using LocalShareApp.Services;
 using System;
 using System.Windows.Input;
@@ -7,26 +8,29 @@ using Xamarin.Forms;
 namespace LocalShareApp.ViewModels
 {
 
-    internal class OnlinePCPageViewModel : ViewModelBase
+    public class OnlinePCPageViewModel : ViewModelBase
     {
-
-        //public ObservableCollection<TcpHostModel> Hosts { get; } = ActiveTcpConnections.Instance.Connections;
 
         public ICommand SendFileCommand { get; set; }
         public ICommand SendFolderCommand { get; set; }
 
-        public ActiveTcpConnections Hosts { get; set; } = ActiveTcpConnections.Instance;
+        public ActiveTcpConnections Hosts { get; }
 
         private readonly IMessageService messageService;
+        private readonly ILocalShareTransferService _localShareTransferService;
+        private readonly TcpManager _tcpManager;
 
 
-
-        public OnlinePCPageViewModel()
+        public OnlinePCPageViewModel(ILocalShareTransferService localShareTransferService, ActiveTcpConnections activeTcpConnections, TcpManager tcpManager)
         {
             SendFileCommand = new Command(OpenSendFileDialogAsync);
             SendFolderCommand = new Command(OpenSendFolderDialogAsync);
             messageService = DependencyService.Get<IMessageService>();
-            TcpManager.AnyPCFoundEvent += OnHostDetected;
+
+            _localShareTransferService = localShareTransferService;
+            Hosts = activeTcpConnections;
+            _tcpManager = tcpManager;
+            _tcpManager.AnyPCFoundEvent += OnHostDetected;
 
             //Hosts.AddConnection(new TcpClient());
 
@@ -35,29 +39,27 @@ namespace LocalShareApp.ViewModels
 
         private async void OpenSendFolderDialogAsync(object obj)
         {
+            var host = (obj as TcpHostModel);
             var folderPicker = DependencyService.Get<IFilePicker>();
             var folderPath = await folderPicker.PickFolder();
+
+            if (folderPath != null)
+                await _localShareTransferService.SendToClient(host, new[] { folderPath }, true);
         }
 
         private async void OpenSendFileDialogAsync(object obj)
         {
             try
             {
+                var host = (obj as TcpHostModel);
+
                 var filePicker = DependencyService.Get<IFilePicker>();
                 var filePath = await filePicker.PickFiles();
 
-
-                await FileTransferService.SendToHost("192.168.0.108", filePath);
-
-                //var host = obj as TcpHostModel;
+                if (filePath != null)
+                    await _localShareTransferService.SendToClient(host, filePath, false);
 
 
-                //if (!string.IsNullOrEmpty(filePath))
-                //{
-
-                //    await messageService.ShowAsync(filePath);
-                //    await FileTransferService.SendToHost("192.168.0.108", filePath);
-                //}
 
             }
             catch (Exception ex)
